@@ -1,0 +1,16 @@
+# Title     : TODO
+# Objective : TODO
+# Created by: emilyvasquez
+# Created on: 9/4/20
+x <- 1:50
+w <- 1 + sqrt(x)/2
+example1 <- data.frame(x=x, y= x + rnorm(x)*w)
+attach(example1)
+fm <- lm(y ~ x)
+summary(fm)
+lrf <- lowess(x, y)
+plot(x, y)
+lines(x, lrf$y)
+abline(0, 1, lty=3)
+abline(coef(fm))
+detach()
