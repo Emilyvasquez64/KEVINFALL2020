@@ -4,7 +4,7 @@
 # Created on: 9/3/20
 #Q1:What are the names of the people in your study group? Emmanuel
 #Q2 work on Hawkes
-#Q3#Can you write some code in R that will simulate a fair roll?
+#Q3 Can you write some code in R that will simulate a fair roll?
 dice.roll <- sample(1:6, size = 20, replace = TRUE)
 dice.roll
 temp<-dice.roll==6
@@ -13,7 +13,7 @@ mean(dice.roll)
 #This is due before class “Adjust” the dice or play with the random number generator.
 # Can you get them to roll a 6 more or less often than would be expected? How would you know - what is “more often”
 # Answer: A fair die means that there is equal chance for each number to come out 1/6 chances for 6 to come out each time
-# if you have 20 rolls in a fair dice , then you shoudl get at least 3 sixes
+# if you have 20 rolls in a fair dice , then you should get at least 3 sixes
 #if you have more than more 3.4444 6's then its unfair, if average of 6's
 # in order to make it unfair you can tape some weight to the 1 so its more attracted to the ground and it will sit face down
-#the average value is around 3.4 threofre the die is fair
+#the average value is around 3.4 therefore the die is fair
