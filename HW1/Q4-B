@@ -15,3 +15,21 @@ mean(AGE[female == 1])
 sd(AGE[female == 1])
 mean(AGE[!female])
 sd(AGE[!female])
+> prop.table(table(educ_indx,female))
+female
+educ_indx       male     female
+No HS  0.13826080 0.13270087
+HS     0.13891701 0.14146552
+SmColl 0.08061144 0.09240278
+Bach   0.07443091 0.08225450
+Adv    0.05216064 0.06679553
+> table(educ_indx,female)
+female
+educ_indx  male female
+No HS  27180  26087
+HS     27309  27810
+SmColl 15847  18165
+Bach   14632  16170
+Adv    10254  13131
+# We found it interesting that females had higher levels of education over men at every level. This supports the idea that women want to have careers and not just be stay at home mothers with part time gigs. After researching this idea it seems to be the normal in rich nations going foward such as the United States.
+https://www.nber.org/digest/jan07/w12139.html
