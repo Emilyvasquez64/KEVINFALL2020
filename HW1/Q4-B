@@ -15,7 +15,7 @@ mean(AGE[female == 1])
 sd(AGE[female == 1])
 mean(AGE[!female])
 sd(AGE[!female])
-> prop.table(table(educ_indx,female))
+prop.table(table(educ_indx,female))
 female
 educ_indx       male     female
 No HS  0.13826080 0.13270087
