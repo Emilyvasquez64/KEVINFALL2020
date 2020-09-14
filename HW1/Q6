@@ -1,22 +1,32 @@
-# Title     : TODO
-# Objective : TODO
-# Created by: emilyvasquez
-# Created on: 9/4/20
-#Differences in means can be complicated. Find the mean return on SP500 index (choose a time period).
-# When the previous 2 days were positive? Negative?
-# Now read about “hot hands fallacy” and tell if you think that helps investment strategy.
-# (You might start with this tweet, and read the papers referenced.)
-#We went on  https://finance.yahoo.com/quote/%5EGSPC/history?period1=1597536000&period2=1598745600&interval=1d&filter=history&frequency=1d
-#downladed the data and calcuated the mean return from the time period of 8/17-8/28, a 10 day period
-#in order to find daily return we will use the foruma ((Adj Close/(previous day Adj close))-1)*100
-library(readr)
+Questions 5
+#Using data from:
+https://finance.yahoo.com/quote/%5EGSPC/history?period1=1559282400&period2=1567144800&interval=1d&filter=history&frequency=1d
+
+#I exported the data to excel and then calculated the return (current Adj.close/ previous Adj.close - 1).
+
 rm(list = ls(all = TRUE))
-getwd()
-setwd ("/Users/emilyvasquez/documents/ecob2000_lecture1")
-SP500 <- read.csv("SP500.csv", header = TRUE)
-SP500[2:10, "Return"]
-# What is the mean return on days when the previous day’s return was positive?
+
+SP500 <- read.csv("data.sp500.csv", header = TRUE)
+#78 obs. of 10 variables
+
+SP500[1:5, "Return"]
+#[1]              -0.27652405% 2.14323708%  0.81618545%  0.61355868% 
+#65 Levels:  -0.03498800% -0.05060750% -0.12339339% -0.12592229% ... 2.14323708%
+
+SP500$Return[1:5]
+#[1]              -0.27652405% 2.14323708%  0.81618545%  0.61355868% 
+#65 Levels:  -0.03498800% -0.05060750% -0.12339339% -0.12592229% ... 2.14323708%
+
 return_table  <- read.table("return.txt")
+
+adj.close <- read.table("adj.close.txt")
+
+mean(adj.close$V1)
+#[1] 2926.366
+
+sd(adj.close$V1)
+#[1] 64.44803
+
 return_day <- function(return_table) {
   if (return_table > 0) {
     result <- "Positive"
@@ -30,6 +40,32 @@ return_day <- function(return_table) {
   return(result)
 }
 
+return_day(-0.002765) #6/3/2019
+#[1] "Negative"
+return_day(0.021432) #6/4/2019
+#[1] "Positive"
+return_day(0.008161) #6/5/2019
+#[1] "Positive"
+return_day(0.006113) #6/6/2019
+#[1] "Positive"
+return_day(0.010497) #6/7/2019
+#[1] "Positive"
+return_day(0.004660) #6/10/2019
+#[1] "Positive"
+return_day(-0.000349) ##6/11/2019
+#[1] "Negative"
+return_day(-0.002037) ##6/12/2019
+#[1] "Negative"
+return_day(0.004097) #6/13/2019
+#[1] "Positive"
+return_day(-0.001611) #6/14/2019
+#[1] "Negative"
+return_day(0.000931) #6/17/2019
+#[1] "Positive"
+
+#Mean return S&P 500 for June, 3 2019 is -0.002765%, the following day the mean return incresead to 0.02143%. The mean return for when the previous 2 days were positive was (June 5th and 6th) the following day the mean return increased by.0.00436%. The mean return for when the previous 2 days were negative (June 11th and 12th), the following day the mean increased to 0.00409%.
+#Mean return S&P 500 for June, 17 2019 is 0.000931%, the following day the mean return incresead to 0.00971%.
+#Upon researching the Hot Hand Fallacy We found that there is alot of information regarding the fallacy most of which agree on the that the fallacy is false because the events are independent. I do not believe that the hot hand fallacy is true. I do believe that it helps in investment strategy from a phycological standpoint. A winning investment strategy builds confidence which can give an investor confidence to make a risky move that they might not otherwise have made if they weren't on a 'streak' which could be a good or bad investment move. 
 
 
 
