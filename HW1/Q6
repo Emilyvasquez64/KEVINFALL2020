@@ -1,0 +1,36 @@
+# Title     : TODO
+# Objective : TODO
+# Created by: emilyvasquez
+# Created on: 9/4/20
+#Differences in means can be complicated. Find the mean return on SP500 index (choose a time period).
+# When the previous 2 days were positive? Negative?
+# Now read about “hot hands fallacy” and tell if you think that helps investment strategy.
+# (You might start with this tweet, and read the papers referenced.)
+#We went on  https://finance.yahoo.com/quote/%5EGSPC/history?period1=1597536000&period2=1598745600&interval=1d&filter=history&frequency=1d
+#downladed the data and calcuated the mean return from the time period of 8/17-8/28, a 10 day period
+#in order to find daily return we will use the foruma ((Adj Close/(previous day Adj close))-1)*100
+library(readr)
+rm(list = ls(all = TRUE))
+getwd()
+setwd ("/Users/emilyvasquez/documents/ecob2000_lecture1")
+SP500 <- read.csv("SP500.csv", header = TRUE)
+SP500[2:10, "Return"]
+# What is the mean return on days when the previous day’s return was positive?
+return_table  <- read.table("return.txt")
+return_day <- function(return_table) {
+  if (return_table > 0) {
+    result <- "Positive"
+  }
+  else if (return_table < 0 ){
+    result <- "Negative"
+  }
+  else {
+    result <- "Zero"
+  }
+  return(result)
+}
+
+
+
+
+
