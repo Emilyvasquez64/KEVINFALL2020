@@ -2,8 +2,8 @@
 # Objective : TODO
 # Created by: emilyvasquez
 # Created on: 9/4/20
-getwd()
-setwd ("/Users/emilyvasquez/documents/ecob2000_lecture1/acs2017_ny")
+#getwd()
+#setwd ("/Users/emilyvasquez/documents/ecob2000_lecture1/acs2017_ny")
 load("acs2017_ny_data.RData")
 acs2017_ny[1:10,1:7]
 attach(acs2017_ny)
@@ -15,21 +15,46 @@ mean(AGE[female == 1])
 sd(AGE[female == 1])
 mean(AGE[!female])
 sd(AGE[!female])
-prop.table(table(educ_indx,female))
-female
-educ_indx       male     female
-No HS  0.13826080 0.13270087
-HS     0.13891701 0.14146552
-SmColl 0.08061144 0.09240278
-Bach   0.07443091 0.08225450
-Adv    0.05216064 0.06679553
-> table(educ_indx,female)
-female
-educ_indx  male female
-No HS  27180  26087
-HS     27309  27810
-SmColl 15847  18165
-Bach   14632  16170
-Adv    10254  13131
-# We found it interesting that females had higher levels of education over men at every level. This supports the idea that women want to have careers and not just be stay at home mothers with part time gigs. After researching this idea it seems to be the normal in rich nations going foward such as the United States.
-https://www.nber.org/digest/jan07/w12139.html
+prop.table(table(DEGFIELD,female))                           female
+DEGFIELD                                                                0            1
+  N/A                                                        3.577893e-01 3.665692e-01
+  Agriculture                                                7.986367e-04 5.341201e-04
+  Environment and Natural Resources                          8.800265e-04 5.544675e-04
+  Architecture                                               1.505710e-03 7.426813e-04
+  Area, Ethnic, and Civilization Studies                     3.866012e-04 9.258082e-04
+  Communications                                             4.415393e-03 6.292443e-03
+  Communication Technologies                                 2.238218e-04 1.780400e-04
+  Computer and Information Sciences                          5.783758e-03 1.999135e-03
+  Cosmetology Services and Culinary Arts                     1.475189e-04 1.068240e-04
+  Education Administration and Teaching                      7.803240e-03 2.631940e-02
+  Engineering                                                1.326144e-02 2.736730e-03
+  Engineering Technologies                                   1.042806e-03 2.085612e-04
+  Linguistics and Foreign Languages                          9.766768e-04 2.497647e-03
+  Family and Consumer Sciences                               1.780400e-04 1.205585e-03
+  Law                                                        1.526057e-04 4.781647e-04
+  English Language, Literature, and Composition              4.089834e-03 7.686243e-03
+  Liberal Arts and Humanities                                1.607447e-03 2.355215e-03
+  Library Science                                            2.543429e-05 1.882137e-04
+  Biology and Life Sciences                                  5.885495e-03 6.124577e-03
+  Mathematics and Statistics                                 2.594298e-03 2.004222e-03
+  Military Technologies                                      1.526057e-05 0.000000e+00
+  Interdisciplinary and Multi-Disciplinary Studies (General) 6.205967e-04 1.200499e-03
+  Physical Fitness, Parks, Recreation, and Leisure           7.935499e-04 5.493807e-04
+  Philosophy and Religious Studies                           1.754966e-03 9.054607e-04
+  Theology and Religious Vocations                           9.614162e-04 3.560801e-04
+  Physical Sciences                                          5.422591e-03 2.701122e-03
+  Nuclear, Industrial Radiology, and Biological Technologies 5.086858e-05 1.017372e-05
+  Psychology                                                 4.847776e-03 1.147087e-02
+  Criminal Justice and Fire Protection                       2.645166e-03 1.851616e-03
+  Public Affairs, Policy, and Social Work                    8.647659e-04 3.148765e-03
+  Social Sciences                                            1.286975e-02 1.173029e-02
+  Construction Services                                      2.238218e-04 1.017372e-05
+  Electrical and Mechanic Repairs and Technologies           6.612916e-05 5.086858e-06
+  Precision Production and Industrial Arts                   0.000000e+00 0.000000e+00
+  Transportation Sciences and Technologies                   3.866012e-04 4.069486e-05
+  Fine Arts                                                  7.421726e-03 1.033650e-02
+  Medical and Health Sciences and Services                   3.840578e-03 1.609482e-02
+  Business                                                   2.720960e-02 2.265178e-02
+  History                                                    4.837602e-03 2.848641e-03
+  # We found it interesting that more women have degrees in areas such as teaching, biology and law but still trail in physical sciences and mathematics. There should be programs at the high school level to introduce more women into the STEM degree fields.
+  # https://inside.collegefactual.com/stories/women-vs-men-in-stem-degrees
