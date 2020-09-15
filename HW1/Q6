@@ -1,22 +1,22 @@
-#Using data from:
-#https://finance.yahoo.com/quote/%5EGSPC/history?period1=1559282400&period2=1567144800&interval=1d&filter=history&frequency=1d
-rm(list = ls(all = TRUE))
-SP500 <- read.csv("data.sp500.csv", header = TRUE)
-SP500[1:5, "Return"]
-#NULL
-SP500$Return[1:5]
-#NULL
-return_day <- function(return_table) {
-  if (return_table > 0) {
-    result <- "Positive"
-  }
-  else if (return_table < 0 ){
-    result <- "Negative"
-  }
-  else {
-    result <- "Zero"
-  }
-  return(result)
-}
-#Upon researching the 'Hot Hand Fallacy' We found that there are a lot of publications regarding the fallacy most of which are on the side that the fallacy is false due to each event being independent events. I do not think that mathematically the hot hand fallacy is true. However, I do believe that it helps in investment strategy from a phycological standpoint. A winning investment strategy builds confidence which can give an investor confidence to make a risky move that they might not otherwise have made if they weren't on a 'streak' which could be a good or bad investment move.
-#We were unable to get R to read our csv data or excel data as when we ran our code, R returned NUll
+> library(readr)
+> rm(list = ls(all = TRUE))
+> getwd()
+[1] "/Users/emilyvasquez"
+> setwd ("/Users/emilyvasquez/documents/ecob2000_lecture1")
+> SP500 <- read.csv("SP500.csv", header = TRUE)
+> SP500[2:10, "Return"]
+[1]  0.2303389 -0.4404395  0.3158633  0.3441107  1.0043718  0.3596351  1.0195626
+[8]  0.1673044  0.6732565
+> # What is the mean return on days when the previous day’s return was positive?
+> return_table  <- read.table("return.txt")
+> return_day <- function(return_table) {
++     if (return_table > 0) {
++         result <- "Positive"
++     }
++     else if (return_table < 0 ){
++         result <- "Negative"
++     }
++     else {
++         result <- "Zero"
++     }
++     return(result)
