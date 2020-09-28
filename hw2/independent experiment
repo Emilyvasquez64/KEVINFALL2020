@@ -1,0 +1,88 @@
+#A plastic six-sided dice was put into the oven at 200 degrees Fahrenheit for 9 minutes. After the dice cooled the dice this process was repeated one more time.  The dice was monitored in order to make sure it did was not damaged to the point it could not be rolled similar to a normal six-sided dice.
+
+#During the tests to roll the dice, the dice was shaken in the hands and tossed into a cardboard box.
+
+#H0: The dice is fair
+#Ha = The dice is not fair
+
+#EP1:
+#Roll 20 times.  Do a chi squared test.  If the p value for the chi squared test is at most 0.25 then we can conclude it is not fair.  A p value of 0.25 was chosen instead of a more standard 95% or 90% confidence interval.  This was chosen because it is desired to remove potentially unfair dice with higher scrutiny.
+
+#The results of the 20 rolls were:
+sample <- c(1,5,1,4,3,4,5,1,5,6,5,2,5,3,6,4,6,4,3,5)
+sample
+
+#The mean and the standard deviation were found:
+
+mean(sample)
+ 
+sd(sample)
+
+#Then it was formatted differently into:
+load <- c(3,1,3,4,6,3)
+
+#It was then plotted:
+plot(table(load))
+
+
+#This shows the distribution of dice rolls that were found experimentally by using the tested dice.  So there were three 1’s, one 2, three 3’s, four 4’s, six 5’s, and three 6’s.  
+
+chisq.test(load, p=c(1/6,1/6,1/6,1/6,1/6,1/6))
+
+#This does a chi-squared test where it is assumed that there is an equal probability for each possibility, where the expected amount of each roll should be n/6, in this case about 3.33.
+
+#In order to be confident, the test was conducted in R successfully, the X-squared value was also calculated by hand, and the value of 4 was confirmed.
+
+#Because the P value 0.5494, it is higher than 0.25 and so we cannot reject the null hypothesis that the dice is fair. 
+
+#Possible EP2:
+#The mean for the previous EP1 was 3.9, which is higher than the expected value of 3.5.  It is possible that due to the low sample size, we could not reject the null despite the dice being unfair.  So to improve EP1 the sample size was increased to 60.
+
+  
+load2 <- c(4,2,5,3,1,3,1,3,1,2,3,3,1,6,2,3,1,3,6,5,1,4,1,5,3,1,4,
+         1,3,1,6,3,6,6,2,5,6,6,4,6,3,2,3,2,3,4,1,4,2,3,6,2,2,4,2,1,1,6,5,1)
+
+mean(load2)
+sd(load2)
+
+#The mean of this was found to be below 3.5 in this test, different from the first test where the experimental mean was higher than 3.5.  
+
+#Instead of manually making a table, the table of frequencies was constructed using the table function in R and the chi-squared test was conducted.
+
+#The table formed is as shown below:
+#1  2  3  4  5  6 
+#1  4 10 14  7  5 10 
+
+#Plot is as shown 
+plot(table(load2))
+
+ #chi_test_60
+
+chisq.test(table(load2))
+
+#In this case the p value was found to be 0.2521, close but still above our required value of 0.25.  So, again we are unable to reject the null hypothesis that the dice is fair.
+
+#EP3:
+#For this because it was close to rejecting the null, we tested with a higher sample size of 140.
+#The test was conducted in a similar matter to EP2 and EP1.
+
+load3 <- c(4,2,5,4,5,1,1,1,3,4,3,1,2,4,6,4,1,6,6,1,3,2,2,4,5,5,6,2,6,3,2,4,6,4,2,1,
+         2,1,3,5,6,3,6,6,2,3,1,3,3,6,5,3,5,2,1,4,2,1,6,2,3,2,1,3,1,1,6,3,5,6,4,3,2,6,1,3,4,
+         5,1,1,2,6,5,5,2,1,2,1,5,6,4,2,4,6,3,1,1,3,3,4,1,6,
+         5,3,3,3,1,3,6,4,3,1,1,3,6,3,2,2,4,6,5,4,1,1,1,5,6,1,5,3,1,1,4,2,1,2,5,4,2,5)
+
+mean(load3)
+
+sd(load3)
+
+plot(table(load3))
+
+
+#chi_test_140
+
+chisq.test(table(load3))
+
+#Because the p value is .3441, it is greater than 0.25 and we cannot reject the null hypothesis that the dice is fair.
+
+#EP4:
+#We feel increasing the sample size will not get us to reject the Null Hypothesis. If we were to perform another EPi, we would change the criteria. Instead of the criteria being the mean of the rolled values, we would study the number of times a 1 comes up on the die and compare it to the expected value of the number 1 coming up X times. We wanted to investigate this because in our frequency table, 1 is the mode.
