@@ -54,5 +54,6 @@ a[names(a)==6]
 #If you roll a dice 100 times each try there is a 1/6 chance to obtain a 6, if the 100 tries are perfectlt fair then you would expect about 16.666 of your 100 tries to a 6 
 #each roll is independent of the next
 # a chi  square test measures how well the observed distribution of data fits with the distribution that is expected if the variables are independent. 
+#we will look at an alpha level of 5% or .05
 chisq.test(a) 
 
