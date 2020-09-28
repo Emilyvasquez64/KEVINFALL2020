@@ -1,1 +1,58 @@
-2
+#HW2
+#Group Members: Joe Correa, Erik Carlson, Emmanuel Mendez , Emily Vasquez 
+#Possible Protocol 1 (PP1): roll once; if get 6 then conclude the dice is not fair; if roll any other number then conclude it is fair. 
+dice.roll <- sample(1:6, size = 1, replace = TRUE)
+dice.roll
+x <- dice.roll
+if(x > 5) {
+  print("not fair")
+} else {
+  print("fair")
+}
+#Analyze PP1: if the dice were fair, what is the probability it would be judged to be unfair?
+#there are 5/6 chances for it to be numbers 1-5 , which would deem the die fair . There are 1/6 chances the die is fair. 
+#Oppositely, if the dice were unfair, what is the probability that it would be judged to be fair?
+#the dice is only being rolled once, if the die were unfair where it would only roll 6 , there is a not enough data to determine wether it was fair or unfair based on the roll.
+
+#PP2: roll the dice 30 times. 
+#Group can specify a decision rule to judge that dice is fair or unfair: If the number 6 appears  more than 9 times then the die is fair, otherwise it is not 
+#Consider the stats question: if fair dice are rolled 30 times, what is likely number of 6 resulting?
+#if a dice is rolled 30 times there is a 1/6 chance that each roll will be a 6, therefore (1/6)*30 =5
+#you expect about 5 rolls to be a 6 
+dice.roll <- sample(1:6, size = 30, replace = TRUE)
+dice.roll
+numbers<-c(dice.roll)
+a<-table(numbers)
+a
+a[names(a)==6]
+#How unusual is it, to get 1 more or less than that? 
+#How unusual is it, to get 2 more or less?
+#3?
+# Each die roll is an indepent event , this means what I roll in each try has nothing to do with what comes before or after 
+#to determine how unusual it is , it would be based on a parameter set by the group that if it appears more than 9 times then it is unfair. When calculating what the mean would be if there were exactly 9 6's and the rest were other numbers, we obtain an average of 3.7
+# if the die is perfectly fair then the mean would be 3.5 
+mean(dice.roll)
+x <- mean(dice.roll)
+if(x > 3.7) {
+  print("not fair")
+} else {
+  print("fair")
+}
+
+#PP3: roll 100 times and specify decision rules. Some cases are easy: if every roll comes to 6 then might quickly conclude. 
+#But what about the edge cases? Is it fair to say that every conclusion has some level of confidence attached?
+#Where do you set boundaries for decisions? Analyze PP3.
+#Hypothesis: if there are more than 22 6's rolled then the dice is unfair also if less than 10 6's are rolled the the dice is also unfair
+#null hypothesis: if number of 6's rolled in 100 trials are less than 10 or more than a hundred then the die remains fair 
+
+dice.roll <- sample(1:6, size = 100, replace = TRUE)
+dice.roll
+numbers<-c(dice.roll)
+a<-table(numbers)
+a
+a[names(a)==6]
+#If you roll a dice 100 times each try there is a 1/6 chance to obtain a 6, if the 100 tries are perfectlt fair then you would expect about 16.666 of your 100 tries to a 6 
+#each roll is independent of the next
+# a chi  square test measures how well the observed distribution of data fits with the distribution that is expected if the variables are independent. 
+chisq.test(a) 
+
