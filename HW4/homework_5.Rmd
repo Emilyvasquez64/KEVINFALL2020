@@ -1,0 +1,299 @@
+---
+title: "Homework 5"
+author: "Erik Carlson, Emmanuel Mendez, Emily Vasquez, and Joe Correa"
+date: "11/2/2020"
+font-family: 'Corbel'
+output: html_document
+---
+
+
+For this homework, we improve some of our regression models to explain wages.
+
+First we subsetted the data, in this case the subset we used was for individuals who were born in Central America between the ages of 25 and 55, who work at least 40-47 weeks a year, who work 35 hours or more a week.
+
+We also subsetted the same data but we did not subset based on birthplace.
+
+```{r, include=FALSE}
+library("AER")
+```
+
+```{r , message=FALSE}
+load("acs2017_ny_data.RData")
+attach(acs2017_ny)
+use_varb <- (AGE >= 25) & (AGE <= 55) & (LABFORCE == 2) & (WKSWORK2 > 4) & (UHRSWORK >= 35) & (BPL == "Central America") 
+#For our first subset we use people in prime age 25 <= >= age 55, in the labor force and born in central america.
+use_varb_non <- (AGE >= 25) & (AGE <= 55) & (LABFORCE == 2) & (WKSWORK2 > 4) & (UHRSWORK >= 35)
+dat_use <- subset(acs2017_ny,use_varb)
+dat_use_non <- subset(acs2017_ny,use_varb_non) 
+detach(acs2017_ny)
+
+```
+
+Following subsetting the data we ran a regression of Wage against age, sex and education.
+Then we calculated the mean age for a 25 year old male with some college, a 25 year old male with a college education and a 35 year old male with an advanced degree. Since this is from our subsetted data, these individuals are form Central America.
+
+```{r , message=FALSE}
+
+
+reg_biv <- lm(INCWAGE ~ AGE + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use)
+summary(reg_biv)
+
+age_25_some_col<- coef(reg_biv)[1] + 25*coef(reg_biv)[2] + coef(reg_biv)[5]
+age_25_col<- coef(reg_biv)[1] + 25*coef(reg_biv)[2] + coef(reg_biv)[6]
+age_35_adv<- coef(reg_biv)[1] + 35*coef(reg_biv)[2] + coef(reg_biv)[7]
+          
+summary(reg_biv)
+print("Mean Wage of Age 25 male born in Central America with some college")
+print(age_25_some_col)
+print("Mean Wage of Age 25 male born in Central America with a college degree")
+print(age_25_col)
+print("Mean Wage of Age 35 male born in Central America with an advanced degree")
+print(age_35_adv)
+
+
+```
+
+In this regression the increase in wage from a high school education is not statistically significant, so it is not statistically different from an individual without a high school education.  This was compared to the general population by doing the same regression and mean wage calculations using the second subset, in this case the one that did not subset by place of birth.
+
+
+
+```{r , message=FALSE}
+
+reg_biv_non <- lm(INCWAGE ~ AGE + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use_non)
+
+age_25_some_col<- coef(reg_biv_non)[1] + 25*coef(reg_biv_non)[2] + coef(reg_biv_non)[5]
+age_25_col<- coef(reg_biv_non)[1] + 25*coef(reg_biv_non)[2] + coef(reg_biv_non)[6]
+age_35_adv<- coef(reg_biv_non)[1] + 35*coef(reg_biv_non)[2] + coef(reg_biv_non)[7]
+
+summary(reg_biv_non)
+print("Mean Wage of Age 25 year old male with some college")
+print(age_25_some_col)
+print("Mean Wage of Age 25 male with a college degree")
+print(age_25_col)
+print("Mean Wage of Age 35 male with an advanced degree")
+print(age_35_adv)
+
+
+```
+
+It is not terribly helpful to compare intercepts and regression coeficcients for these two different regressions.  However one can stil judge the significance of the coefficients and compare estimated means for different demographic factors.  For example, in this regression that is for the more general populace, a high school education was deemed statistically significant.  Furthermore, the mean wages for those born in Central America were lower when compared to their direct equivalent.  
+For example, 
+An age 25 year old male with some college born in Central America had an estimated  $6749.44 lower wage.
+An Age 25 male with a college degree born in Central America had an estimated $24710.75 lower wage.
+An age 35 year old male with an advanced degree born in Central America had an estimated  $17363.30 lower wage,
+
+
+
+```{r, message=FALSE}
+#get rid of?
+attach(dat_use)
+reg_log <- lm(log1p(INCWAGE) ~ AGE + female + educ_hs + educ_somecoll + educ_college + educ_advdeg)
+
+age_25_some_col_l<- coef(reg_log)[1] + 25*coef(reg_log)[2] + coef(reg_log)[5]
+age_25_col_l<- coef(reg_log)[1] + 25*coef(reg_log)[2] + coef(reg_log)[6]
+age_35_adv_l<- coef(reg_log)[1] + 35*coef(reg_log)[2] + coef(reg_log)[7]
+
+summary(reg_log)
+
+print(age_25_some_col_l)
+print(age_25_col_l)
+print(age_35_adv_l)
+detach(dat_use)
+```
+
+A nonlinear regression was done with the data subsetted for those born in Central America with an Age squared component. An assumption of this added component would be that as age increased, Income would peak, plateau then decrease.  
+
+In previous lab work it was found that the squared component was significant in the un-subsetted acs data.  This is because all ages were included, including the elderly when wage would significantly decrease.  It was unknown whether this component would be significant for our subsetted data.
+
+```{r}
+
+reg_sq <- lm(INCWAGE ~ AGE + I(AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use)
+summary(reg_sq)
+age_25_some_col2<- coef(reg_sq)[1] + 25*coef(reg_sq)[2] + (25**2)*coef(reg_sq)[3] + coef(reg_sq)[6]
+print(age_25_some_col2)
+```
+
+From this regression it can be seen from the t value and p value for the age squared coefficient, that it is not statistically significant.  This means that the age squared component is not statistically different from zero, therefore it is incorrect to assume this nonlinear model, and that it is more appropriate to model Age linearally.  
+
+We wished to determine whether this nonlinear factor of age was significant if we did not subset by birth place.
+
+```{r}
+
+reg_non_sq <- lm(INCWAGE ~ AGE + I(AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use_non)
+
+reg_non_tri <- lm(INCWAGE ~ AGE + I(AGE^2) + I(AGE^3) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use_non)
+
+
+summary(reg_non_sq)
+summary(reg_non_tri)
+
+
+
+linearHypothesis(reg_non_tri, c("I(AGE^2)=0","I(AGE^3)=0"))
+```
+
+Following this first regression with just Age squared, this component was statistically significant.  Continuing we added the Age cubed component in a new regression, which by itself was deemed not statistically significant.
+
+We then did an F test, testing whether both the coefficients of Age squared and Age cubed were zero.  If they were not statistically different from zero, then that would say that it can be described with a linear model instead.  WIth an F value of 84.448, it was determined that age is a non-linear component of wage.  This is expected because Age squared alone was before deemed statistically significiant.
+
+
+We plotted both our linear and non-linear regressions for certain parameters.
+
+```{r , message=FALSE, echo=FALSE}
+# subset in order to plot...
+attach(dat_use)
+NNobs <- length(INCWAGE)
+set.seed(12345) 
+graph_obs <- (runif(NNobs) < 0.1) 
+dat_graph <-subset(dat_use,graph_obs)
+
+plot(INCWAGE ~ jitter(AGE, factor = 2), pch = 16, col = rgb(1, 0.2, 0.6, alpha = 0.2), main = "Central American Born female with college education", xlab = "Age", ylab = "Wage", ylim = c(40000,80000), data = dat_graph)
+
+to_be_predicted2 <- data.frame(AGE = 25:55, female = 1,  educ_hs = 0, educ_somecoll = 0, educ_college = 1, educ_advdeg = 0)
+to_be_predicted2$yhat <- predict(reg_biv, newdata = to_be_predicted2)
+
+lines(yhat ~ AGE, data = to_be_predicted2)
+detach(dat_use)
+```
+
+
+```{r , message=FALSE, echo=FALSE} 
+#New Plot
+attach(dat_use)
+NNobs <- length(INCWAGE)
+set.seed(12345) 
+graph_obs <- (runif(NNobs) < 0.1) 
+dat_graph <-subset(dat_use,graph_obs)
+
+plot(INCWAGE ~ jitter(AGE, factor = 2), pch = 16, col = rgb(1, 0.2, 0.6, alpha = 0.2), main = "Central American Born female with college education", xlab = "Age", ylab = "Wage", ylim = c(40000,120000), data = dat_graph)
+
+to_be_predicted2 <- data.frame(AGE = 25:55, female = 1,  educ_hs = 0, educ_somecoll = 0, educ_college = 1, educ_advdeg = 0)
+to_be_predicted2$yhat <- predict(reg_non_sq, newdata = to_be_predicted2)
+
+lines(yhat ~ AGE, data = to_be_predicted2)
+detach(dat_use)
+```
+
+```{r }
+
+
+reg_sq <- lm(INCWAGE ~ log(AGE) + I(AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use)
+
+reg_non_sq <- lm(INCWAGE ~ log(AGE) + (AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use_non)
+
+reg_non_tri <- lm(INCWAGE ~ log(AGE) + (AGE^2) + I(AGE^3) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use_non)
+
+summary(reg_sq)
+summary(reg_non_sq)
+summary(reg_non_tri)
+
+
+
+```
+
+```{r , message=FALSE, echo=FALSE}
+
+attach(dat_use)
+NNobs <- length(INCWAGE)
+set.seed(12345) 
+graph_obs <- (runif(NNobs) < 0.1) 
+dat_graph <-subset(dat_use,graph_obs)
+
+plot(INCWAGE ~ jitter(AGE, factor = 2), pch = 16, col = rgb(1, 0.2, 0.6, alpha = 0.2), main = "Central American Born female with college education", xlab = "Age", ylab = "Wage", ylim = c(40000,120000), data = dat_graph)
+
+to_be_predicted2 <- data.frame(AGE = 25:55, female = 1,  educ_hs = 0, educ_somecoll = 0, educ_college = 1, educ_advdeg = 0)
+to_be_predicted2$yhat <- predict(reg_non_sq, newdata = to_be_predicted2)
+
+lines(yhat ~ AGE, data = to_be_predicted2)
+detach(dat_use)
+
+```
+
+The predicted wage for a central american born female with a college education peaks at 55 years of age. When adding a polynomial to the second degree to the regression, wages peak closer to 50 years of age around 49 years. Once that maximum age is reached, wage decreases as age increases. 
+
+
+As an academic exercise we did a purposely faulty subset regression.  In this cause we subset in a manner that included only females with a college education or an advanced degree.  We then did a regression that used female and education high school as dependant variables.  In this case female would have an NA coefficient because there are only females in the subset, so it would not be compared to anything.  Educ_hs would have an NA coefficient because there are no individuals with only a high school education present in the subsetted data.
+
+```{r , message=FALSE, echo=FALSE}
+
+attach(acs2017_ny)
+use_varb <- (AGE >= 25) & (AGE <= 55) & (LABFORCE == 2) & (WKSWORK2 > 4) & (UHRSWORK >= 35) & (Hispanic == 1) & (female == 1) & ((educ_college == 1) | (educ_advdeg == 1))
+dat_use2 <- subset(acs2017_ny,use_varb)
+dummy <- lm(INCWAGE ~ AGE + female + educ_hs, data=dat_use2)
+summary(dummy)
+detach(acs2017_ny)
+
+
+```
+As expected this regression produced NA values in the areas predicted.
+
+
+```{r , message=FALSE, echo=FALSE}
+print("Log dependant variable:")
+reg_sq2 <- lm(log1p(INCWAGE) ~ AGE + I(AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use)
+summary(reg_sq2)
+
+
+age_25_some_col_2<- exp((coef(reg_sq2))[1] + (25*coef(reg_sq2)[2]) + ((25**2)*coef(reg_sq2)[3]) + (coef(reg_sq2)[6]))
+age_25_some_col_2<- exp(coef(reg_sq2))[1] + exp((25*coef(reg_sq2)[2])) + exp(((25)*coef(reg_sq2)[3])) + exp((coef(reg_sq2)[6]))
+age_35_some_col_2<- exp(coef(reg_sq2)[1] + 35*coef(reg_sq2)[2] + (35**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[6])
+age_45_some_col_2<- exp(coef(reg_sq2)[1] + 45*coef(reg_sq2)[2] + (45**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[6])
+age_45_some_col_2_female<- exp(coef(reg_sq2)[1] + 45*coef(reg_sq2)[2] + (45**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[4] + coef(reg_sq2)[6])
+print("The wage of a 25 year old male from our subset with some college education is:")
+print(age_25_some_col_2)
+
+print("The wage of a 35 year old male from our subset with some college education is:")
+print(age_35_some_col_2)
+
+print("The wage of a 45 year old male from our subset with some college education is:")
+print(age_45_some_col_2)
+
+print("The wage of a 45 year old female from our subset with some college education is:")
+print(age_45_some_col_2_female)
+```
+
+```{r , message=FALSE, echo=FALSE}
+print("Non-log dependant variable:")
+reg_sq2 <- lm(INCWAGE ~ AGE  + I(AGE^2) + female + educ_hs + educ_somecoll + educ_college + educ_advdeg, data=dat_use)
+summary(reg_sq2)
+
+age_25_some_col_2<- ((coef(reg_sq2))[1] + (25*coef(reg_sq2)[2]) + ((25**2)*coef(reg_sq2)[3])+ (coef(reg_sq2)[6]))
+age_35_some_col_2<- (coef(reg_sq2)[1] + 35*coef(reg_sq2)[2] + (35**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[6])
+age_45_some_col_2<- (coef(reg_sq2)[1] + 45*coef(reg_sq2)[2] + (45**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[6])
+age_45_some_col_2_female<- (coef(reg_sq2)[1] + 45*coef(reg_sq2)[2] + (45**2)*coef(reg_sq2)[3]+ coef(reg_sq2)[4] + coef(reg_sq2)[6])
+print("The wage of a 25 year old male from our subset with some college education is:")
+print(age_25_some_col_2)
+
+print("The wage of a 35 year old male from our subset with some college education is:")
+print(age_35_some_col_2)
+
+print("The wage of a 45 year old male from our subset with some college education is:")
+print(age_45_some_col_2)
+
+print("The wage of a 45 year old female from our subset with some college education is:")
+print(age_45_some_col_2_female)
+```
+
+Interestingly when taking the log of wage as the dependent variable, the sign of AGE changed from positive to negative. When comparing it to the non log regression of the same independent variables, we get AGE as a positive value. This could be due multicollinearity leading to a strong relationship between wage and age at all age levels.
+
+A question posed in the lab was whether it made sense to include squared non-linear components of dummy variables.  In this case it would not be appropriate and not make much sense.  The values of dummy variables are 0 or 1 (True of False) therefore raising the dummy's to a power will not change the answers.  So, Beta * 1^2, is not appropriate to put in a regression.
+
+
+We then did a regression with interactions between dependant variables.  In this case we used female, various races, and then interactions between female and those races.  This would inform us of the effects on wage for being a female with races.  
+
+```{r, message=FALSE}
+
+reg_test <- lm(INCWAGE ~ AGE + female + I(female*AfAm) + I(female*Hispanic) + I(female*Asian) + I(female*race_oth) + AfAm + Hispanic + Asian + race_oth  , data=dat_use_non )
+summary(reg_test)
+ 
+```
+
+Being female is a negative factor on income, however the differential between females and males of African American, Hispanic, and Asian descent is lower compared with individuals not of those races.  For example, the coefficient of female shows a decrease in wage of 23109.44 dollars.  However Female*Afam is 16190.92, so it can be thought that the difference between male and female african americans is -23109.44 + 16190.92, or only a gender gap of -6918.52. 
+
+Following this a regression was conducted with INCWAGE being the independant variable to predict Age for out subsetted group.
+
+```{r}
+rev_reg <- lm(AGE ~ INCWAGE, data=dat_use)
+summary(rev_reg)
+```
+In this case the R-squared value is significantly lower than when we used age and other factors to help predict Income.  A variable may be a predictor of another, but it is not necessarily the case that the reverse is also a good predictor.
