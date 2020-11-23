@@ -1,0 +1,104 @@
+---
+title: "Exam 2"
+author: "Emily Vasquez"
+date: "11/23/2020"
+output: html_document
+---
+
+## R Markdown
+The next questions will use the PUMS ACS 2017 NY data that we’ve been using so often in class. We’ll consider people’s decisions about usual hours worked, given by the variable UHRSWORK. There are 3 broad categories: people who are not in the labor force, those working part time (UHRSWORK > 0 and < 35) and those working full time ( >= 35).
+
+
+Explain what variables you choose to use as predictors. Do they seem exogenous? Consider whether polynomials in Age are important or interactions with dummy variables.
+Do your estimates seem plausible? Are the estimates each statistically significant?
+Construct a joint test of whether a reasonable set of coefficients (such as age polynomials, or education dummies) are all zero.
+What are the predicted probabilities for a few particular groups?
+How many Type I and Type II errors are made by the model?
+(20 points) Estimate a simple logit model, for the outcome variable Work_Fulltime <- (UHRSWORK >= 35), within your subsample.
+Explain what variables you choose to use as predictors. Do they seem exogenous? Consider whether polynomials in Age are important or interactions with dummy variables.
+Do your estimates seem plausible? Are the estimates each statistically significant?
+Construct a joint test of whether a reasonable set of coefficients (such as age polynomials, or education dummies) are all zero.
+What are the predicted probabilities for a few particular groups?
+How many Type I and Type II errors are made by the model?
+(25 points) Estimate one or more additional models with other methods (not OLS or logit) to predict hours or if a person works full time. Explain as in previous. Compare the different models and make judgements about strengths and weaknesses of each.
+
+```{r, message=FALSE}
+attach(acs2017_ny)
+#(10 points) Create a subgroup of the sample, that makes sense as we focus on the decision of whether to work full time or part time. Explain your rationale.
+use_varb <- (AGE >= 25) & (AGE <= 55) & (LABFORCE >= 1) & (WKSWORK2 > 4) & (UHRSWORK>1)
+dat_use <- subset(acs2017_ny,use_varb) # 
+detach()
+attach(dat_use)
+
+
+```
+
+#(10 points) Within this subgroup, test if there is a difference between men and women. Calculate a t-stat and p-value for the test of no difference between the groups. Provide simple statistics for a few other relevanant categories
+
+```{r }
+print(c("The mean hours worked for females who are in the labor force part time is ", round(mean(UHRSWORK[female==1|LABFORCE==1]),2)))
+print(c("The mean hours worked for females who are in the labor force full time is ", round(mean(UHRSWORK[female==1|LABFORCE==2]),2)))
+print(c("The mean hours worked for males who are in the labor force part time is ", round(mean(UHRSWORK[female==0|LABFORCE==1]),2)))
+print(c("The mean hours worked for males who are in the labor force full time is ", round(mean(UHRSWORK[female==0|LABFORCE==2]),2)))
+
+```
+```{r }
+part_time <- lm(UHRSWORK ~ AGE + female + LABFORCE==1)
+summary(part_time)
+full_time <- lm(UHRSWORK ~ AGE + female + LABFORCE==2)
+summary(full_time)
+
+```
+
+```{r}
+# subset in order to plot...
+NNobs <- length(UHRSWORK)
+set.seed(12345) 
+graph_obs <- (runif(NNobs) < 0.1) # so something like just 1/10 as many obs
+dat_graph <-subset(dat_use,graph_obs)
+plot(UHRSWORK ~ jitter(LABFORCE, factor = 2), pch = 16, col = rgb(1, 0.2, 0.6, alpha = 0.2), main = "Hour worked vs Labor force participation for a female ", xlab = "participation", ylab = "hours worked", ylim = c(0,110), data = dat_graph)
+detach(dat_use)
+```
+
+
+
+You can also embed plots, for example:
+
+
+(20 points) Estimate a simple OLS model for hours worked, within your subsample.
+```{r pressure, echo=FALSE}
+L1<-LABFORCE==1
+L2<-LABFORCE==2
+model_ols2 <- lm(as.integer(UHRSWORK) ~ female + LABFORCE + AGE +  I(AGE^2)   , data = dat_use)
+#values for Labforce are 1 and 2
+coefplot(model_ols2, innerCI=2, outerCI=0, intercept = FALSE, title = "Linear Regression Model", color = "red", lab = "Predictors")
+summary(model_ols2)
+
+
+```
+(20 points) Estimate a simple logit model, for the outcome variable Work_Fulltime <- (UHRSWORK >= 35), within your subsample.
+Explain what variables you choose to use as predictors. Do they seem exogenous? Consider whether polynomials in Age are important or interactions with dummy variables.
+Do your estimates seem plausible? Are the estimates each statistically significant?
+Construct a joint test of whether a reasonable set of coefficients (such as age polynomials, or education dummies) are all zero.
+What are the predicted probabilities for a few particular groups?
+```{r message=FALSE}
+model_logit1 <- glm((UHRSWORK) ~ female + LABFORCE + AGE +  I(AGE^2)  , data = dat_use,
+            )
+summary(model_logit1)
+library(stargazer)
+stargazer(model_logit1, type="text")
+
+
+```
+(25 points) Estimate one or more additional models with other methods (not OLS or logit) to predict hours or if a person works full time. Explain as in previous. Compare the different models and make judgements about strengths and weaknesses of each.
+```{r}
+model_probit5 <- glm((UHRSWORK) ~ female + LABFORCE + AGE +  I(AGE^2)  , data = dat_use,
+            )
+summary(model_probit5)
+pred_vals <- predict(model_probit5, dat_use, type = "response")
+pred_model_probit5 <- (pred_vals > 0.5)
+pred_table<-table(pred = pred_model_probit5, true = dat_use$LABFORCE)
+pred_table
+
+
+```
